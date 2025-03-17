@@ -1,8 +1,7 @@
 package:
+  name: sequences
   dependencies:
     - arrays
-    - assert
-    - console
     - control
     - effect
     - lazy
@@ -12,14 +11,16 @@ package:
     - partial
     - prelude
     - profunctor
-    - psci-support
-    - quickcheck
-    - quickcheck-laws
     - tuples
     - unfoldable
     - unsafe-coerce
-  name: sequences
+  test:
+    main: Test.Main
+    dependencies:
+      - quickcheck
+      - quickcheck-laws
+      - assert
 workspace:
-  extra_packages: {}
-  package_set:
-    registry: 50.4.0
+  extraPackages: {}
+  packageSet:
+    registry: 63.5.0

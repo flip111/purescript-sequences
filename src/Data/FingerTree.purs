@@ -181,7 +181,7 @@ compareFingerTree xs ys =
         other -> other
 
 instance functorFingerTree :: Functor (FingerTree v) where
-  map f Empty = Empty
+  map _ Empty = Empty
   map f (Single x) = Single (f x)
   map f (Deep v pr m sf) = Deep v (f <$> pr) (f <$$$> m) (f <$> sf)
 
@@ -213,7 +213,7 @@ instance foldableFingerTree :: Foldable (FingerTree v) where
 
 
 instance traversableFingerTree :: Traversable (FingerTree v) where
-  traverse f Empty            = pure Empty
+  traverse _ Empty            = pure Empty
   traverse f (Single x)       = Single <$> f x
   traverse f (Deep v pr m sf) =
     Deep v <$> traverse f pr
@@ -288,7 +288,7 @@ toFingerTree s = snocAll Empty s
 data ViewL s a = NilL | ConsL a (Lazy (s a))
 
 instance functorViewL :: Functor s => Functor (ViewL s) where
-  map f NilL = NilL
+  map _ NilL = NilL
   map f (ConsL x xs) = ConsL (f x) (map f  <$> xs)
 
 viewL :: forall a v.  Monoid v => Measured a v
@@ -427,7 +427,7 @@ splitDigit p i as =
 -- | This function throws an error if the argument is empty.
 splitTree :: forall a v. Monoid v => Measured a v => Partial =>
   (v -> Boolean) -> v -> FingerTree v a -> LazySplit (FingerTree v) a
-splitTree p i (Single x) = LazySplit lazyEmpty x lazyEmpty
+splitTree _ _ (Single x) = LazySplit lazyEmpty x lazyEmpty
 splitTree _ _ Empty = crashWith "Data.FingerTree.splitTree: Empty"
 splitTree p i (Deep _ pr m sf) =
   let vpr = i <> measure pr
@@ -461,7 +461,7 @@ split :: forall a v. Monoid v => Measured a v => Partial
       => (v -> Boolean)
       -> FingerTree v a
       -> Tuple (Lazy (FingerTree v a)) (Lazy (FingerTree v a))
-split p Empty = Tuple lazyEmpty lazyEmpty
+split _ Empty = Tuple lazyEmpty lazyEmpty
 split p xs =
   if p (measure xs)
     then
@@ -494,7 +494,7 @@ unfoldRight = unfoldr step
 fullyForce :: forall a v. FingerTree v a -> FingerTree v a
 fullyForce ft =
   case ft of
-    Deep v pr m sf ->
+    Deep v _ m _ ->
       let v' = force v
           m' = fullyForce (force m)
       in  ft
